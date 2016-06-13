@@ -21,27 +21,33 @@ plotdb.load('qsp.plotdb.json', function(chart) {
 
   chart.config({yCriteria: 20, xCriteria: 20});
   chart.data(getData);
-  chart.attach(document.getElementById("box1"));
+  chart.attach(document.getElementById("box2"));
 
   chart2 = chart.clone();
   chart2.config({yCriteria: 20, xCriteria: 20});
   chart2.data(getData);
-  chart2.attach(document.getElementById("box2"));
+  chart2.attach(document.getElementById("box3"));
 
-  chart3 = chart.clone();
-  chart3.config({yCriteria: 20, xCriteria: 20});
-  chart3.data(getData);
-  chart3.attach(document.getElementById("box3"));
-
-  var box = document.body.getBoundingClientRect();
-  /*
-  d3.select("#box1")
-    .style({width: box.width})
-    .transition().duration(2000)
-    .style({width: box.width / 2})
-    .tween("resize", function(){ return function(t) { chart.resize(); chart.render(); }})
-    .transition().duration(2000)
-    .style({width: box.width})
-    .tween("resize", function(){ return function(t) { chart.resize(); chart.render(); }});
-  */
 }); /* plotdb.load */
+
+function calendarData() {
+  return {
+    date: [{name: "日期", data: [
+      "2016/2/1", "2016/2/2", "2016/2/3", "2016/2/4", "2016/2/5", "2016/2/6",
+      "2016/2/7", "2016/2/8", "2016/2/9", "2016/2/10", "2016/2/11", "2016/2/12",
+      "2016/2/13", "2016/2/14", "2016/2/15", "2016/2/16", "2016/2/17", "2016/2/18",
+      "2016/2/19", "2016/2/20", "2016/2/21", "2016/2/22", "2016/2/23", "2016/2/24",
+      "2016/2/25", "2016/2/26", "2016/2/27", "2016/2/28", "2016/2/29", "2016/3/1",
+    ]}],
+    value: [{name: "一年會籍12堂/月(SY)", data: [
+      0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0,
+      0, 0, 1, 1, 1, 4, 0, 0, 0, 1, 0,
+      0, 0, 0, 2, 0, 0, 0, 0, 
+    ]}]
+  };
+}
+
+plotdb.load('heatmap.plotdb.json', function(chart) {
+  chart.data(calendarData);
+  chart.attach(document.getElementById("box1"));
+});
