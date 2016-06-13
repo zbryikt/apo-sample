@@ -34,6 +34,7 @@ plotdb.load('qsp.plotdb.json', function(chart) {
   chart3.attach(document.getElementById("box3"));
 
   var box = document.body.getBoundingClientRect();
+  /*
   d3.select("#box1")
     .style({width: box.width})
     .transition().duration(2000)
@@ -42,5 +43,5 @@ plotdb.load('qsp.plotdb.json', function(chart) {
     .transition().duration(2000)
     .style({width: box.width})
     .tween("resize", function(){ return function(t) { chart.resize(); chart.render(); }});
-
+  */
 }); /* plotdb.load */
