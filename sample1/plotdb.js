@@ -703,17 +703,19 @@ plotdb.view = {
     return req.send();
   },
   chart: function(chart, arg$){
-    var theme, fields, root, data;
-    theme = arg$.theme, fields = arg$.fields, root = arg$.root, data = arg$.data;
+    var ref$, theme, fields, root, data;
+    ref$ = arg$ != null
+      ? arg$
+      : {}, theme = ref$.theme, fields = ref$.fields, root = ref$.root, data = ref$.data;
     this._ = {
       handler: {},
+      _chart: JSON.stringify(chart),
       chart: chart,
       fields: fields,
       root: root,
       inited: false
     };
     if (chart) {
-      delete chart.assets;
       this._.chart = chart = import$(eval(chart.code.content), chart);
     }
     plotdb.chart.updateConfig(chart, chart.config);
@@ -724,13 +726,13 @@ plotdb.view = {
     if (fields) {
       this.sync(fields);
     }
-    if (!data && !fields) {
+    if (!data && (fields == null || !fields.length)) {
       this.data(chart.sample);
     }
-    if (theme) {
+    if (theme != null) {
       this.theme(theme);
     }
-    if (fields) {
+    if (fields != null) {
       this.sync(fields);
     }
     if (root) {
@@ -778,8 +780,8 @@ import$(plotdb.view.chart.prototype, {
     if (chart.parse) {
       chart.parse();
     }
-    chart.bind();
     chart.resize();
+    chart.bind();
     chart.render();
     root.setAttribute('class', (root.getAttribute('class') || "").split(' ').filter(function(it){
       return it !== 'loading';
@@ -805,7 +807,11 @@ import$(plotdb.view.chart.prototype, {
     return this._.chart.render();
   },
   clone: function(){
-    return new plotdb.view.chart(this._.chart, this._);
+    var ref$;
+    return new plotdb.view.chart(JSON.parse(this._._chart), {
+      theme: (ref$ = this._).theme,
+      fields: ref$.fields
+    });
   },
   on: function(event, cb){
     var ref$;
