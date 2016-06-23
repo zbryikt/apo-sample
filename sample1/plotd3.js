@@ -1,1 +1,545 @@
-var plotd3;plotd3={html:{},rwd:{}},plotd3.html.tooltip=function(t){var e,n,i;return e={handler:{}},n=plotd3.html.popup(t,null,null,e),i=e.popup,n.nodes=function(e){var o;return o=e,o.on("mousemove",function(e,o){var l,r,a,s;return l=d3.select(t)[0][0].getBoundingClientRect(),r=this.getBoundingClientRect(),n.fire("mousemove",e,o,this),i.attr({"class":"pdb-popup tooltip left"}),a=r.left>l.width/2+l.left?!0:!1,i.attr({"class":"pdb-popup tooltip "+(a?"left":"right")}),s=function(){var t;return t=i[0][0].getBoundingClientRect(),i.style({top:r.top+r.height/2-t.height/2+"px",opacity:1}),i.style(a?{left:r.left-t.width-10+"px"}:{left:r.left+r.width+10+"px"})},"block"!==i.style("display")?(i.style({display:"block",opacity:.01}),setTimeout(s,0)):s()}),o.on("mouseout",function(t,e){return n.fire("mouseout",t,e,this),i.style({display:"none"})}),n},n.direction=function(t){return e.direction="left"===t?"left":"right",i.attr({"class":"pdb-popup tooltip "+e.direction})},n.show=function(t,o){var l;return l=i[0][0].getBoundingClientRect(),"right"!==e.direction?t=t-(l.right-l.left)-10:t+=10,i.style({display:"block"}),i.style({top:o-(l.bottom-l.top)/2+"px",left:t+"px"}),n.hide()},n.type("tooltip"),n},plotd3.html["float"]=function(t,e,n){var i;return i=plotd3.html.popup(t,e,n),i.type("float"),i},plotd3.html.popup=function(t,e,n,i){var o,l;return null==i&&(i={handler:{}}),o=i.popup=d3.select(t).append("div"),o.each(function(){var t;return t=d3.select(this),t.append("div").attr({"class":"title"}),t.append("div").attr({"class":"value"}),t}),o.on("mouseover",function(){return d3.select(this).style({display:"none"})}),l=function(){},l.hide=function(t,e){return null!=t&&null!=e&&l.fire("mouseout",t,e,this),i.hidePopup&&clearTimeout(i.hidePopup),i.hidePopup=setTimeout(function(){return o.style({display:"none"})},1e3)},l.nodes=function(e){var n;return n=e,n.on("mouseout",l.hide),n.on("mousemove",function(e,n){var i,r,a,s,u;return i=[d3.event.clientX,d3.event.clientY],r=i[0],a=i[1],l.fire("mousemove",e,n,this),o.style({display:"block"}),s=o[0][0].getBoundingClientRect(),u=t.getBoundingClientRect(),r=r-s.width/2-u.left,a=a+20-u.top,a>u.height-s.height-50&&(a=a-s.height-40),10>r&&(r=10),r>+u.width-s.width-10&&(r=u.width-s.width-10),o.style({top:a+"px",left:r+"px"})}),l},l.call=function(t){return t.call(o[0][0])},l.show=function(t,e){return o.style({display:"block"}),o.style({top:e+"px",left:t+"px"}),l.hide()},l.fire=function(t,e,n,l){var r;return((r=i.handler)[t]||(r[t]=[])).forEach(function(t){return t.call(l,e,n,o)})},l.fontSize=function(t){return null!=t?(i.fontSize=t,o.style({"font-size":t+"px"}),l):i.fontSize},l.on=function(t,e){var n;return((n=i.handler)[t]||(n[t]=[])).push(e)},l.type=function(t){var e;return t?(i.type=t,o.attr({"class":("pdb-popup "+((e=i.type)?e:"")).trim()})):i.type},e&&l.nodes(e),n&&l.on("mousemove",n),l.type("float"),l},plotd3.rwd.legend=function(){var t,e;return t={padding:[10,5]},e=function(){var e,n,i,o,l,r,a;return t.group=this,n=(e=t.tickValues)?e:t.scale?t.scale.invert?t.scale.ticks(t.ticks||5):t.scale.domain():[0,1],i=this.selectAll("g.legend").data(n),i.enter().append("g").attr({"class":"legend"}).each(function(){var t;return t=d3.select(this),t.append("path").attr({"class":"marker"}),t.append("text")}),i.exit().remove(),this.selectAll("g.legend").each(function(e,i){var o,l,r,a,s,u;if("radius"!==t.type||e)return o=d3.select(this),l=o.select("text"),l.text(e),null!=t.fontSize&&l.attr("font-size",t.fontSize),r=.8*o.select("text")[0][0].getBBox().height,t.marker?t.marker.call(o.select("path.marker")[0][0],e,i):(a=o.select("path.marker"),"color"===(t.type||"color")?a.attr({d:"M"+r/2+" 0 A"+r/2+" "+r/2+" 0 0 0 "+r/2+" "+r+("A"+r/2+" "+r/2+" 0 0 0 "+r/2+" 0"),fill:t.scale(e)}):"radius"===t.type&&(s=t.scale(e),a.attr({cx:s,cy:s,r:s,d:"M"+r/2+" "+(r/2-s)+" A"+s+" "+s+" 0 0 0 "+r/2+" "+(r/2+s)+("A"+s+" "+s+" 0 0 0 "+r/2+" "+(r/2-s)),fill:"#999"}))),u=0,"radius"===t.type&&(u=t.scale(n[n.length-1])),o.select("text").attr({"dominant-baseline":"hanging","text-anchor":"start",dy:1,dx:r+3+u,"font-size":null!=t.fontSize?t.fontSize:void 0})}),o=[0,0],l=[0,0],this.select("text.label").remove(),t.label&&(r=this.append("text").attr({"class":"label"}).text(t.label),r.attr({"font-size":null!=t.fontSize?1.1*t.fontSize:void 0,"font-weight":"bold","dominant-baseline":"hanging"}),"bottom"===(a=t.orient)||"top"===a?o[0]+=r[0][0].getBBox().width+t.padding[0]||10:o[1]+=r[0][0].getBBox().height+t.padding[1]||5),this.selectAll("g.legend").each(function(){var e,n,i,r;return e=d3.select(this).attr({transform:"translate("+o[0]+" "+o[1]+")"}),n=[this.getBBox().width,this.getBBox().height],i=n[0],r=n[1],"bottom"===(n=t.orient)||"top"===n?(t.size&&t.size[0]<o[0]+i&&(o[0]=0,o[1]+=r+(t.padding[1]||5),e=d3.select(this).attr({transform:"translate("+o[0]+" "+o[1]+")"})),o[0]+=i+(t.padding[0]||10)):(l[0]<i&&(l[0]=i),t.size&&t.size[1]<o[1]+r&&(o[1]=0,o[0]+=l[0]+(t.padding[0]||10),e=d3.select(this).attr({transform:"translate("+o[0]+" "+o[1]+")"})),o[1]+=r+(t.padding[1]||5),o[1]+="radius"===t.type?3:0)})},e.offset=function(){var e;return t.group?(e=t.group[0][0].getBBox(),[e.width,e.height]):[0,0]},["label","fontSize","type","marker","tickValues","ticks","orient","scale","size","padding"].map(function(n){return e[n]=function(n){return function(i){return i?(t[n]=i,e):t[n]}}(n)}),e},plotd3.rwd.axis=function(){function t(t){return function(){var e;return e=n[t].apply(n,arguments),e===n?i:e}}var e,n,i,o,l,r;e={},n=d3.svg.axis(),i=function(){return i.autotick(this,arguments)};for(o in n)l=n[o],"function"==typeof l&&(i[o]=t(o));return i.offset=function(){return this._offset},r=function(t,i,o,l){var r,a;return r=(i[0]+i[1])/2,t.select("text.label").remove(),t.call(n),t.selectAll("text").attr({"font-size":null!=e.fontSize?e.fontSize:void 0}),"bottom"===l&&setTimeout(function(){return t.selectAll(".tick text").attr({dy:"0.71em"})},0),e.label?(a=t.append("text").attr({"class":"label"}).text(e.label),null!=e.fontSize&&a.attr({"font-size":e.fontSize}),a.attr("bottom"===l||"top"===l?"in"===e.labelPosition?{transform:"translate("+i[1]+" -3)","text-anchor":"end"}:{transform:"translate("+r+" "+(o+5)+")","text-anchor":"middle"}:"in"===e.labelPosition?{transform:"translate(0 "+i[0]+") rotate(-90)",dy:"1em","text-anchor":"end"}:{transform:"translate("+(-o-5)+" "+r+") rotate(-90)","text-anchor":"middle"})):void 0},i.autotick=function(t,i){var o,l,a,s,u,c,d,p,f,h,g,m,x,v;null==i&&(i=[]),n.apply(t,i),o=[n.scale(),n.orient()],l=o[0],a=o[1],l.rangeExtent?s=l.rangeExtent():(s=l.range(),s=[s[0],s[1]],s.sort()),u=Math.abs(s[1]-s[0]),o=[n.innerTickSize(),n.outerTickSize(),n.tickPadding()],c=o[0],d=o[1],p=o[2],f=d3.max([c,d])+p+1,h=n.tickFormat(),g=l.ticks?n.tickValues()||l.ticks(n.ticks()):l.domain(),"left"===a||"right"===a?(m=d3.max(t.selectAll(".tick text")[0].map(function(t){return t.getBBox().height})),x=u/(1.4*m||14),x=Math.ceil(g.length/x),g=g.filter(function(t,e){return!(e%x)}),n.tickValues(g),r(t,s,f,a),this._offset=d3.max(t.selectAll(".tick text")[0].map(function(t){return t.getBBox().width})),this._offset+=f):(r(t,s,f,a),v=1.15*d3.max(t.selectAll(".tick text")[0].map(function(t){return t.getBBox().width})),m=d3.max(t.selectAll(".tick text")[0].map(function(t){return t.getBBox().height})),x=Math.ceil(g.length/(u/v)),g=g.filter(function(t,e){return!(e%x)}),n.tickValues(g),this._offset=m+f),r(t,s,this._offset,a),e.label&&"in"!==e.labelPosition&&(this._offset+=t.select("text.label")[0][0].getBBox().height+5)},["fontSize","label","labelPosition"].map(function(t){return i[t]=function(t){return function(n){return null==n?e[t]:(e[t]=n,i)}}(t)}),i};
+// Generated by LiveScript 1.3.1
+var plotd3;
+plotd3 = {
+  html: {},
+  rwd: {}
+};
+plotd3.html.tooltip = function(root, sel, cb){
+  var store, ret, popup;
+  store = {
+    handler: {}
+  };
+  ret = plotd3.html.popup(root, null, null, store);
+  popup = store.popup;
+  ret.nodes = function(sel){
+    var x$;
+    x$ = sel;
+    x$.on('mousemove', function(d, i){
+      var rbox, box, ref$, left, top, width, height, isLeft, update;
+      rbox = d3.select(root)[0][0].getBoundingClientRect();
+      box = this.getBoundingClientRect();
+      if (store.coord) {
+        ref$ = store.coord.call(this, d, i), left = ref$[0], top = ref$[1], width = ref$[2], height = ref$[3];
+        box = {
+          left: left,
+          top: top,
+          width: width,
+          height: height
+        };
+      }
+      ret.fire('mousemove', d, i, this);
+      popup.attr({
+        'class': "pdb-popup tooltip " + "left"
+      });
+      isLeft = box.left > rbox.width / 2 + rbox.left ? true : false;
+      popup.attr({
+        'class': "pdb-popup tooltip " + (isLeft ? 'left' : 'right')
+      });
+      update = function(){
+        var pbox;
+        pbox = popup[0][0].getBoundingClientRect();
+        popup.style({
+          top: (box.top + box.height / 2 - pbox.height / 2) + "px",
+          opacity: 1
+        });
+        if (isLeft) {
+          return popup.style({
+            left: (box.left - pbox.width - 10) + "px"
+          });
+        } else {
+          return popup.style({
+            left: (box.left + box.width + 10) + "px"
+          });
+        }
+      };
+      if (popup.style("display") !== 'block') {
+        popup.style({
+          display: 'block',
+          opacity: 0.01
+        });
+        return setTimeout(update, 0);
+      } else {
+        return update();
+      }
+    });
+    x$.on('mouseout', function(d, i){
+      ret.fire('mouseout', d, i, this);
+      return popup.style({
+        display: 'none'
+      });
+    });
+    return ret;
+  };
+  ret.direction = function(it){
+    store.direction = it === 'left' ? 'left' : 'right';
+    return popup.attr({
+      'class': "pdb-popup tooltip " + store.direction
+    });
+  };
+  ret.show = function(x, y){
+    var bbox;
+    bbox = popup[0][0].getBoundingClientRect();
+    if (store.direction !== 'right') {
+      x = x - (bbox.right - bbox.left) - 10;
+    } else {
+      x = x + 10;
+    }
+    popup.style({
+      display: 'block'
+    });
+    popup.style({
+      top: (y - (bbox.bottom - bbox.top) / 2) + "px",
+      left: x + "px"
+    });
+    return ret.hide();
+  };
+  ret.type('tooltip');
+  return ret;
+};
+plotd3.html.float = function(root, sel, cb){
+  var ret;
+  ret = plotd3.html.popup(root, sel, cb);
+  ret.type('float');
+  return ret;
+};
+plotd3.html.popup = function(root, sel, cb, store){
+  var popup, ret;
+  store == null && (store = {
+    handler: {}
+  });
+  popup = store.popup = d3.select(root).append('div');
+  popup.each(function(d, i){
+    var x$;
+    x$ = d3.select(this);
+    x$.append('div').attr({
+      'class': 'title'
+    });
+    x$.append('div').attr({
+      'class': 'value'
+    });
+    return x$;
+  });
+  popup.on('mouseover', function(){
+    return d3.select(this).style({
+      display: 'none'
+    });
+  });
+  ret = function(){};
+  ret.hide = function(d, i){
+    if (d != null && i != null) {
+      ret.fire('mouseout', d, i, this);
+    }
+    if (ret.hidePopup) {
+      clearTimeout(ret.hidePopup);
+    }
+    return ret.hidePopup = setTimeout(function(){
+      return popup.style({
+        display: 'none'
+      });
+    }, 1000);
+  };
+  ret.getPopupNode = function(){
+    return popup;
+  };
+  ret.nodes = function(sel){
+    var x$;
+    x$ = sel;
+    x$.on('mouseout', ret.hide);
+    x$.on('mousemove', function(d, i){
+      var ref$, x, y, width, height, pbox, rbox;
+      ref$ = [d3.event.clientX, d3.event.clientY], x = ref$[0], y = ref$[1];
+      if (store.coord) {
+        ref$ = store.coord.call(this, d, i), x = ref$[0], y = ref$[1], width = ref$[2], height = ref$[3];
+      }
+      ret.fire('mousemove', d, i, this);
+      popup.style({
+        display: 'block'
+      });
+      pbox = popup[0][0].getBoundingClientRect();
+      rbox = root.getBoundingClientRect();
+      x = x - pbox.width / 2 - rbox.left;
+      y = y + 20 - rbox.top;
+      if (y > rbox.height - pbox.height - 50) {
+        y = y - pbox.height - 40;
+      }
+      if (x < 10) {
+        x = 10;
+      }
+      if (x > +rbox.width - pbox.width - 10) {
+        x = rbox.width - pbox.width - 10;
+      }
+      return popup.style({
+        top: y + "px",
+        left: x + "px"
+      });
+    });
+    return ret;
+  };
+  ret.coord = function(cb){
+    if (cb != null) {
+      store.coord = cb;
+    } else {
+      return store.coord;
+    }
+    return ret;
+  };
+  ret.call = function(cb){
+    return cb.call(popup[0][0]);
+  };
+  ret.show = function(x, y){
+    popup.style({
+      display: 'block'
+    });
+    popup.style({
+      top: y + "px",
+      left: x + "px"
+    });
+    return ret.hide();
+  };
+  ret.fire = function(event, d, i, node){
+    var ref$;
+    return ((ref$ = store.handler)[event] || (ref$[event] = [])).forEach(function(cb){
+      return cb.call(node, d, i, popup);
+    });
+  };
+  ret.fontSize = function(fs){
+    if (fs != null) {
+      store.fontSize = fs;
+      popup.style({
+        "font-size": fs + "px"
+      });
+      return ret;
+    } else {
+      return store.fontSize;
+    }
+  };
+  ret.on = function(event, cb){
+    var ref$;
+    ((ref$ = store.handler)[event] || (ref$[event] = [])).push(cb);
+    return ret;
+  };
+  ret.type = function(type){
+    var that;
+    if (!type) {
+      return store.type;
+    }
+    store.type = type;
+    return popup.attr({
+      'class': ("pdb-popup " + ((that = store.type) ? that : "")).trim()
+    });
+  };
+  if (sel) {
+    ret.nodes(sel);
+  }
+  if (cb) {
+    ret.on('mousemove', cb);
+  }
+  ret.type('float');
+  return ret;
+};
+plotd3.rwd.legend = function(){
+  var store, ret;
+  store = {
+    padding: [10, 5]
+  };
+  ret = function(){
+    var that, data, x$, offset, max, label, ref$;
+    store.group = this;
+    if (that = store.tickValues) {
+      data = that;
+    } else if (!store.scale) {
+      data = [0, 1];
+    } else if (store.scale.invert) {
+      data = store.scale.ticks(store.ticks || 5);
+    } else {
+      data = store.scale.domain();
+    }
+    x$ = this.selectAll('g.legend').data(data);
+    x$.enter().append('g').attr({
+      'class': 'legend'
+    }).each(function(d, i){
+      var node;
+      node = d3.select(this);
+      node.append('path').attr({
+        'class': 'marker'
+      });
+      return node.append('text');
+    });
+    x$.exit().remove();
+    this.selectAll('g.legend').each(function(d, i){
+      var node, x$, size, m, r, dx;
+      if (store.type === 'radius' && !d) {
+        return;
+      }
+      node = d3.select(this);
+      x$ = node.select('text');
+      x$.text(d);
+      if (store.fontSize != null) {
+        x$.attr("font-size", store.fontSize);
+      }
+      size = node.select('text')[0][0].getBBox().height * 0.8;
+      if (store.marker) {
+        store.marker.call(node.select('path.marker')[0][0], d, i);
+      } else {
+        m = node.select('path.marker');
+        if ((store.type || 'color') === 'color') {
+          m.attr({
+            d: ("M" + size / 2 + " 0 A" + size / 2 + " " + size / 2 + " 0 0 0 " + size / 2 + " " + size) + ("A" + size / 2 + " " + size / 2 + " 0 0 0 " + size / 2 + " 0"),
+            fill: store.scale(d)
+          });
+        } else if (store.type === 'radius') {
+          r = store.scale(d);
+          m.attr({
+            cx: r,
+            cy: r,
+            r: r,
+            d: ("M" + size / 2 + " " + (size / 2 - r) + " A" + r + " " + r + " 0 0 0 " + size / 2 + " " + (size / 2 + r)) + ("A" + r + " " + r + " 0 0 0 " + size / 2 + " " + (size / 2 - r)),
+            fill: '#999'
+          });
+        }
+      }
+      dx = 0;
+      if (store.type === 'radius') {
+        dx = store.scale(data[data.length - 1]);
+      }
+      return node.select('text').attr({
+        "dominant-baseline": "hanging",
+        "text-anchor": "start",
+        dy: 1,
+        dx: size + 3 + dx,
+        "font-size": store.fontSize != null ? store.fontSize : void 8
+      });
+    });
+    offset = [0, 0];
+    max = [0, 0];
+    this.select('text.label').remove();
+    if (store.label) {
+      label = this.append('text').attr({
+        'class': 'label'
+      }).text(store.label);
+      label.attr({
+        "font-size": store.fontSize != null ? store.fontSize * 1.1 : void 8,
+        "font-weight": 'bold',
+        "dominant-baseline": 'hanging'
+      });
+      if ((ref$ = store.orient) === 'bottom' || ref$ === 'top') {
+        offset[0] += label[0][0].getBBox().width + store.padding[0] || 10;
+      } else {
+        offset[1] += label[0][0].getBBox().height + store.padding[1] || 5;
+      }
+    }
+    return this.selectAll('g.legend').each(function(d, i){
+      var node, ref$, w, h;
+      node = d3.select(this).attr({
+        transform: "translate(" + offset[0] + " " + offset[1] + ")"
+      });
+      ref$ = [this.getBBox().width, this.getBBox().height], w = ref$[0], h = ref$[1];
+      if ((ref$ = store.orient) === 'bottom' || ref$ === 'top') {
+        if (store.size && store.size[0] < offset[0] + w) {
+          offset[0] = 0;
+          offset[1] += h + (store.padding[1] || 5);
+          node = d3.select(this).attr({
+            transform: "translate(" + offset[0] + " " + offset[1] + ")"
+          });
+        }
+        return offset[0] += w + (store.padding[0] || 10);
+      } else {
+        if (max[0] < w) {
+          max[0] = w;
+        }
+        if (store.size && store.size[1] < offset[1] + h) {
+          offset[1] = 0;
+          offset[0] += max[0] + (store.padding[0] || 10);
+          node = d3.select(this).attr({
+            transform: "translate(" + offset[0] + " " + offset[1] + ")"
+          });
+        }
+        offset[1] += h + (store.padding[1] || 5);
+        return offset[1] += store.type === 'radius' ? 3 : 0;
+      }
+    });
+  };
+  ret.offset = function(){
+    var box;
+    if (!store.group) {
+      return [0, 0];
+    }
+    box = store.group[0][0].getBBox();
+    return [box.width, box.height];
+  };
+  ['label', 'fontSize', 'type', 'marker', 'tickValues', 'ticks', 'orient', 'scale', 'size', 'padding'].map(function(k){
+    return ret[k] = function(k){
+      return function(it){
+        if (!it) {
+          return store[k];
+        }
+        store[k] = it;
+        return ret;
+      };
+    }(k);
+  });
+  return ret;
+};
+plotd3.rwd.axis = function(){
+  var store, axis, ret, k, v, render;
+  store = {};
+  axis = d3.svg.axis();
+  ret = function(){
+    return ret.autotick(this, arguments);
+  };
+  for (k in axis) {
+    v = axis[k];
+    if (typeof v === 'function') {
+      ret[k] = fn$(k);
+    }
+  }
+  ret.offset = function(){
+    return this._offset;
+  };
+  render = function(group, sizes, offset, orient){
+    var mid, node;
+    mid = (sizes[0] + sizes[1]) / 2;
+    group.select('text.label').remove();
+    group.call(axis);
+    group.selectAll('text').attr({
+      "font-size": store.fontSize != null ? store.fontSize : void 8
+    });
+    if (orient === 'bottom') {
+      setTimeout(function(){
+        return group.selectAll('.tick text').attr({
+          "dy": "0.71em"
+        });
+      }, 0);
+    }
+    if (store.label) {
+      node = group.append('text').attr({
+        'class': 'label'
+      }).text(store.label);
+      if (store.fontSize != null) {
+        node.attr({
+          "font-size": store.fontSize
+        });
+      }
+      if (orient === 'bottom' || orient === 'top') {
+        if (store.labelPosition === 'in') {
+          return node.attr({
+            transform: "translate(" + sizes[1] + " -3)",
+            "text-anchor": "end"
+          });
+        } else {
+          return node.attr({
+            transform: "translate(" + mid + " " + (offset + 5) + ")",
+            "text-anchor": "middle"
+          });
+        }
+      } else {
+        if (store.labelPosition === 'in') {
+          return node.attr({
+            transform: "translate(0 " + sizes[0] + ") rotate(-90)",
+            dy: "1em",
+            "text-anchor": "end"
+          });
+        } else {
+          return node.attr({
+            transform: "translate(" + (-offset - 5) + " " + mid + ") rotate(-90)",
+            "text-anchor": "middle"
+          });
+        }
+      }
+    }
+  };
+  ret.autotick = function(group, args){
+    var ref$, scale, orient, sizes, size, its, ots, tp, offset, format, ticks, tickHeight, count, step, gbox, pbox;
+    args == null && (args = []);
+    axis.apply(group, args);
+    ref$ = [axis.scale(), axis.orient()], scale = ref$[0], orient = ref$[1];
+    if (scale.rangeExtent) {
+      sizes = scale.rangeExtent();
+    } else {
+      sizes = scale.range();
+      sizes = [sizes[0], sizes[1]];
+      sizes.sort(function(a, b){
+        return a - b;
+      });
+    }
+    size = Math.abs(sizes[1] - sizes[0]);
+    ref$ = [axis.innerTickSize(), axis.outerTickSize(), axis.tickPadding()], its = ref$[0], ots = ref$[1], tp = ref$[2];
+    offset = d3.max([its, ots]) + tp + 1;
+    format = axis.tickFormat();
+    ticks = scale.ticks
+      ? axis.tickValues() || scale.ticks(axis.ticks())
+      : scale.domain();
+    if (orient === 'left' || orient === 'right') {
+      tickHeight = d3.max(group.selectAll('.tick text')[0].map(function(d, i){
+        return d.getBBox().height;
+      }));
+      count = size / (1.4 * tickHeight || 14);
+      count = Math.ceil(ticks.length / count);
+      ticks = ticks.filter(function(d, i){
+        return !(i % count);
+      });
+      axis.tickValues(ticks);
+      render(group, sizes, offset, orient);
+      this._offset = d3.max(group.selectAll('.tick text')[0].map(function(d, i){
+        return d.getBBox().width;
+      }));
+      this._offset += offset;
+    } else {
+      render(group, sizes, offset, orient);
+      step = 1.15 * d3.max(group.selectAll('.tick text')[0].map(function(d, i){
+        return d.getBBox().width;
+      }));
+      tickHeight = d3.max(group.selectAll('.tick text')[0].map(function(d, i){
+        return d.getBBox().height;
+      }));
+      count = Math.ceil(ticks.length / (size / step));
+      ticks = ticks.filter(function(d, i){
+        return !(i % count);
+      });
+      axis.tickValues(ticks);
+      this._offset = tickHeight + offset;
+    }
+    render(group, sizes, this._offset, orient);
+    if (store.label && store.labelPosition !== 'in') {
+      this._offset += group.select('text.label')[0][0].getBBox().height + 5;
+    }
+    if (store.boundaryTickInside) {
+      gbox = group[0][0].getBBox();
+      pbox = group.select('path')[0][0].getBBox();
+      if (orient === 'left' || orient === 'right') {
+        group.select('g.tick:first-of-type text').attr({
+          dy: -store.fontSize / 2
+        });
+        return group.select('g.tick:last-of-type text').attr({
+          dy: store.fontSize
+        });
+      } else if (orient === 'bottom' || orient === 'top') {
+        group.select('g.tick:first-of-type text').style({
+          "text-anchor": 'start'
+        });
+        return group.select('g.tick:last-of-type text').style({
+          "text-anchor": 'end'
+        });
+      }
+    }
+  };
+  ['fontSize', 'label', 'labelPosition', 'multiLine', 'boundaryTickInside'].map(function(k){
+    return ret[k] = function(k){
+      return function(it){
+        if (it == null) {
+          return store[k];
+        }
+        store[k] = it;
+        return ret;
+      };
+    }(k);
+  });
+  return ret;
+  function fn$(k){
+    return function(){
+      var r;
+      r = axis[k].apply(axis, arguments);
+      return r === axis ? ret : r;
+    };
+  }
+};

@@ -18,16 +18,10 @@ function getData() {
 }
 
 plotdb.load('qsp.plotdb.json', function(chart) {
-
-  chart.config({yCriteria: 20, xCriteria: 20});
-  chart.data(getData);
-  chart.attach(document.getElementById("box2"));
-
   chart2 = chart.clone();
   chart2.config({yCriteria: 20, xCriteria: 20});
   chart2.data(getData);
   chart2.attach(document.getElementById("box3"));
-
 }); /* plotdb.load */
 
 function calendarData() {
@@ -50,4 +44,19 @@ function calendarData() {
 plotdb.load('heatmap.plotdb.json', function(chart) {
   chart.data(calendarData);
   chart.attach(document.getElementById("box1"));
+});
+
+d3.csv("sales.csv", function(ret) {
+  function flowerData() {
+    var start =    [{name: "開始日期", data: ret.map(function(d,i) { return d["開始"]; }) }];
+    var end =      [{name: "結束日期", data: ret.map(function(d,i) { return d["結束"]; }) }];
+    var size =     [{name: "金額",     data: ret.map(function(d,i) { return parseInt(d["金額"]); }) }];
+    var category = [{name: "業務名",   data: ret.map(function(d,i) { return d["業務名"]; }) }];
+    console.log(category);
+    return {start: start, end: end, size: size, category: category};
+  }
+  plotdb.load('flowers.plotdb.json', function(chart) {
+    chart.data(flowerData);
+    chart.attach(document.getElementById("box2"));
+  });
 });
