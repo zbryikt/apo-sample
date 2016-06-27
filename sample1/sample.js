@@ -22,6 +22,9 @@ plotdb.load('qsp.plotdb.json', function(chart) {
   chart2.config({yCriteria: 20, xCriteria: 20});
   chart2.data(getData);
   chart2.attach(document.getElementById("box3"));
+  chart.config({yCriteria: 20, xCriteria: 20});
+  chart.data(getData);
+  chart.attach(document.getElementById("box4"));
 }); /* plotdb.load */
 
 function calendarData() {
