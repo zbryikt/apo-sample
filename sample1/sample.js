@@ -52,10 +52,10 @@ d3.csv("sales.csv", function(ret) {
     var end =      [{name: "結束日期", data: ret.map(function(d,i) { return d["結束"]; }) }];
     var size =     [{name: "金額",     data: ret.map(function(d,i) { return parseInt(d["金額"]); }) }];
     var category = [{name: "業務名",   data: ret.map(function(d,i) { return d["業務名"]; }) }];
-    console.log(category);
     return {start: start, end: end, size: size, category: category};
   }
   plotdb.load('flowers.plotdb.json', function(chart) {
+    chart.config({unit: "month"}); /* one of: day, week, month */
     chart.data(flowerData);
     chart.attach(document.getElementById("box2"));
   });
